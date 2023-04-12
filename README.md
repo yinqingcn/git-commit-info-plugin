@@ -9,33 +9,51 @@
 npm install git-commit-info-plugin
 ```
 
-## 在vite.config.ts中引用
+## 一、在vite.config.ts中引用
 
 ```
 // vite.config.ts
 
-import gitCommitInfoPlugin from 'git-commit-info-plugin/vite'
+import { buildInfo } from 'git-commit-info-plugin'
 
 import { defineConfig } from 'vite'
 export default defineConfig({
 	plugins:[
 	  ...
-	  gitCommitInfoPlugin()
+	  buildInfo()
 	]
 })
 ```
 
-## 在vue2中使用 
 
-1. ### vue.config.js
+
+### vite 支持配置传参配置
 
 ```
-const gitCommitInfoPlugin = require('git-commit-info-plugin')
+buildInfo(['author','email','commitDate','version','buildDate'])
+```
 
+默认不传参，显示所有信息，上面五个信息可以选填
+
+| 参数名称   | 说明         |
+| ---------- | ------------ |
+| author     | 用户名       |
+| email      | 用户邮箱     |
+| commitDate | 提交时间     |
+| version    | git版本信息  |
+| buildDate  | 构建完成时间 |
+
+
+## 二、在vue2中使用 
+
+1. ### vue.config.js
+```
+
+import gitCommitInfoPlugin from 'git-commit-info-plugin'
 const vueConfig = ({
   publicPath: './',
   chainWebpack: (config) => {
-    // 这里配置build信息
+    // 这里是重点
     config.plugin('html').tap(args => {
       args[0].buildInfo = gitCommitInfoPlugin;
       return args;
@@ -49,20 +67,15 @@ const vueConfig = ({
 
 module.exports = vueConfig
 ```
-
 2. ### 需要在index.html中配置如下信息(通常vue2的index.html是在public文件夹下)
-
    1. 可以根据项目需要填写meta信息
-
-   ```
-   <meta name="author" content="<%= htmlWebpackPlugin.options.buildInfo.commitAuthor %>" >
-   <meta name="email" content="<%= htmlWebpackPlugin.options.buildInfo.commitEmail %>" >
-   <meta name="commitDate" content="<%= htmlWebpackPlugin.options.buildInfo.commitDate %>" >
-   <meta name="buildDate" content="<%= htmlWebpackPlugin.options.buildInfo.buildDate %>" >
-   <meta name="version" content="<%= `${htmlWebpackPlugin.options.buildInfo.branch}-${htmlWebpackPlugin.options.buildInfo.commit}` %>" >
-   ```
-
-   
+```
+<meta name="author" content="<%= htmlWebpackPlugin.options.buildInfo.commitAuthor %>" >
+<meta name="email" content="<%= htmlWebpackPlugin.options.buildInfo.commitEmail %>" >
+<meta name="commitDate" content="<%= htmlWebpackPlugin.options.buildInfo.commitDate %>" >
+<meta name="buildDate" content="<%= htmlWebpackPlugin.options.buildInfo.buildDate %>" >
+<meta name="version" content="<%= `${htmlWebpackPlugin.options.buildInfo.branch}-${htmlWebpackPlugin.options.buildInfo.commit}` %>" >
+```
 
 完成后，html header中会看到如下信息
 
@@ -75,19 +88,3 @@ module.exports = vueConfig
 ```
 
 
-
-### vite支持配置传参配置
-
-```
-gitCommitInfoPlugin(['author','email','commitDate','version','buildDate'])
-```
-
-默认不传参，显示所有信息，上面五个信息可以选填
-
-| 参数名称   | 说明         |
-| ---------- | ------------ |
-| author     | 用户名       |
-| email      | 用户邮箱     |
-| commitDate | 提交时间     |
-| version    | git版本信息  |
-| buildDate  | 构建完成时间 |
