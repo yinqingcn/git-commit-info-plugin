@@ -49,7 +49,7 @@ buildInfo(['author','email','commitDate','version','buildDate'])
 1. ### vue.config.js
 ```
 
-import gitCommitInfoPlugin from 'git-commit-info-plugin'
+const gitCommitInfoPlugin = require('git-commit-info-plugin')
 const vueConfig = ({
   publicPath: './',
   chainWebpack: (config) => {
